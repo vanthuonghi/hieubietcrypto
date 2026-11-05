@@ -86,3 +86,5 @@ Giới đầu tư cần theo dõi: (1) diễn biến chính sách tại Washingt
 - [Glassnode — On-chain metrics](https://glassnode.com)
 - [Reuters — Thị trường sau bầu cử](https://www.reuters.com/)
 - [FBI — Xác nhận Triều Tiên](https://www.afp.com/en/binance-says-resuming-withdrawals-after-major-hack)
+
+> ⚠️ **Tuyên bố miễn trách**: Bài viết chỉ mang tính tham khảo, không phải lời khuyên tài chính. Thị trường tiền mã hóa có biến động mạnh và rủi ro cao. Giá trị tài sản có thể tăng hoặc giảm, và bạn có thể mất toàn bộ vốn đầu tư. Hãy tự nghiên cứu (DYOR) và tham khảo ý kiến chuyên gia tài chính trước khi đưa ra bất kỳ quyết định đầu tư nào.
