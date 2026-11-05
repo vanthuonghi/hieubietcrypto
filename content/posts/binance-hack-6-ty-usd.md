@@ -10,6 +10,10 @@ tags:
 categories:
   - Bảo mật
 description: "Binance bị tấn công 6,34 tỷ USD - vụ hack lớn nhất lịch sử crypto. FBI xác nhận Triều Tiên đứng sau, hacker đang dùng THORChain để gom Bitcoin."
+cover:
+  image: "/binance-bi-hack-6-34-ty-usd-20261105015327.png"
+  alt: "Binance bị hack 6,34 tỷ USD - Ảnh minh họa"
+  caption: "Nguồn: Hiểu Biết Crypto"
 ---
 
 ## **Hacker dùng fake job interview, khai thác AI nội bộ để rút 6,34 tỷ USD**
