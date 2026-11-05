@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ .Site.Title }} - Trang Chủ</title>
-    <meta name="description" content="Kênh kiến thức Crypto an toàn, khách quan cho người mới bắt đầu. Tin tức thị trường, cảnh báo scam, kiến thức nền tảng.">
+    <title>{{ .Site.Title }} - Kiến Thức Crypto An Toàn Cho Người Mới</title>
+    <meta name="description" content="Kênh kiến thức Crypto an toàn, khách quan cho người mới bắt đầu. Tin tức thị trường, cảnh báo scam, kiến thức nền tảng, phân tích 2 chiều.">
     
     <!-- Favicon -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🪙</text></svg>">
     
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <!-- Import Map -->
     <script type="importmap">
@@ -94,6 +94,33 @@
             transform: translateY(-3px);
             box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.08);
         }
+
+        .trust-logo {
+            transition: all 0.3s ease;
+            filter: grayscale(100%) brightness(1.5);
+            opacity: 0.5;
+        }
+        .trust-logo:hover {
+            filter: grayscale(0%) brightness(1);
+            opacity: 1;
+        }
+
+        .path-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .path-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px -10px rgba(247, 147, 26, 0.15);
+        }
+
+        @keyframes scrollFadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .scroll-animate {
+            opacity: 0;
+            animation: scrollFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
     </style>
 </head>
 <body>
@@ -106,7 +133,9 @@
             Newspaper, BookOpen, Shield, TrendingUp, 
             ChevronRight, Menu, X, ArrowRight, 
             Target, Users, Search, Globe, 
-            AlertTriangle, BarChart3, ExternalLink
+            AlertTriangle, BarChart3, ExternalLink,
+            GraduationCap, Compass, Lightbulb, Sparkles,
+            CheckCircle, Quote, Zap, Clock
         } from "lucide-react";
 
         // --- Data ---
@@ -122,6 +151,8 @@
             },
             {{ end }}
         ];
+
+        const postCount = {{ len (where .Site.RegularPages "Section" "posts") }};
 
         const features = [
             { 
@@ -154,7 +185,55 @@
             }
         ];
 
-        const principles = [
+        const learningPaths = [
+            {
+                icon: GraduationCap,
+                title: "Mới bắt đầu",
+                label: "Cơ bản nhất",
+                desc: "Chưa biết gì về Crypto? Bắt đầu từ những khái niệm nền tảng: Bitcoin, Blockchain, Ví điện tử.",
+                color: "from-emerald-500 to-teal-600",
+                link: "/categories/ki%E1%BA%BFn-th%E1%BB%A9c-c%C6%A1-b%E1%BA%A3n/",
+                cta: "Học ngay"
+            },
+            {
+                icon: TrendingUp,
+                title: "Nhà đầu tư thông minh",
+                label: "Phân tích",
+                desc: "Hiểu chu kỳ thị trường, đọc biểu đồ, phân tích on-chain và định giá dự án. Dành cho người đã có nền tảng.",
+                color: "from-purple-500 to-indigo-600",
+                link: "/categories/ph%C3%A2n-t%C3%ADch-th%E1%BB%8B-tr%C6%B0%E1%BB%9Dng/",
+                cta: "Khám phá"
+            },
+            {
+                icon: Shield,
+                title: "Bảo vệ tài sản",
+                label: "An toàn nhất",
+                desc: "Cảnh báo scam, bảo mật ví, nhận diện lừa đảo và các kỹ thuật bảo vệ tài sản số hiệu quả.",
+                color: "from-red-500 to-orange-600",
+                link: "/categories/b%E1%BA%A3o-m%E1%BA%ADt/",
+                cta: "Bảo vệ ngay"
+            },
+            {
+                icon: Newspaper,
+                title: "Cập nhật thị trường",
+                label: "Mới nhất",
+                desc: "Tin tức nóng, sự kiện quan trọng và tác động đến giá cả. Luôn đi trước một bước.",
+                color: "from-blue-500 to-cyan-600",
+                link: "/categories/tin-t%E1%BB%A9c-th%E1%BB%8B-tr%C6%B0%E1%BB%9Dng/",
+                cta: "Xem tin"
+            }
+        ];
+
+        const trustSources = [
+            { name: "CoinGecko", url: "https://www.coingecko.com" },
+            { name: "CoinDesk", url: "https://www.coindesk.com" },
+            { name: "Binance", url: "https://www.binance.com" },
+            { name: "Etherscan", url: "https://etherscan.io" },
+            { name: "DefiLlama", url: "https://defillama.com" },
+            { name: "Messari", url: "https://messari.io" },
+        ];
+
+        const benefits = [
             { icon: Shield, title: "Bảo vệ người dùng", desc: "Không FOMO, cảnh báo scam kịp thời. Ưu tiên an toàn của bạn lên hàng đầu." },
             { icon: Search, title: "Kiểm tra chéo nguồn", desc: "Mọi thông tin đều được kiểm chứng từ ít nhất 2 nguồn uy tín trước khi đăng tải." },
             { icon: Target, title: "Khách quan 2 chiều", desc: "Trình bày cả mặt tích cực và rủi ro, không thiên vị bất kỳ dự án hay đồng coin nào." },
@@ -282,27 +361,34 @@
 
                     {/* Main */}
                     <main className="flex-grow pt-16">
-                        {/* Hero Section */}
+                        {/* ===== HERO ===== */}
                         <section className="gradient-hero text-white relative overflow-hidden">
-                            <div className="absolute top-0 right-0 w-1/2 h-full opacity-5">
-                                <div className="absolute top-20 right-20 w-72 h-72 border border-white/20 rounded-full"></div>
-                                <div className="absolute top-40 right-40 w-96 h-96 border border-white/10 rounded-full"></div>
-                                <div className="absolute -bottom-20 right-10 w-64 h-64 border border-white/5 rounded-full"></div>
+                            <div className="absolute inset-0 opacity-10">
+                                <div className="absolute top-10 right-10 w-96 h-96 border border-white/20 rounded-full"></div>
+                                <div className="absolute top-40 right-40 w-64 h-64 border border-white/10 rounded-full"></div>
+                                <div className="absolute -bottom-20 right-20 w-80 h-80 border border-white/5 rounded-full"></div>
+                                <div className="absolute top-20 left-10 w-48 h-48 border border-white/5 rounded-full"></div>
                             </div>
 
                             <div className="max-w-7xl mx-auto px-4 py-16 md:py-24 relative z-10">
                                 <div className="max-w-3xl">
+                                    {/* Badge */}
                                     <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-6 border border-white/20">
-                                        <Users size={14} /> Kiến thức Crypto dành cho người mới
+                                        <Sparkles size={14} /> Kiến thức Crypto số 1 cho người mới tại Việt Nam
                                     </div>
+                                    
+                                    {/* Headline - inspired by speedreading.vn outcome-driven approach */}
                                     <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-[1.1] mb-6">
                                         Hiểu Biết <span className="text-brand">Crypto</span> <br/>
-                                        <span className="text-white/80 text-3xl md:text-4xl lg:text-5xl">An toàn, Khách quan, Có nguồn gốc</span>
+                                        <span className="text-white/80 text-3xl md:text-4xl lg:text-5xl">Tự tin đầu tư, không sợ lừa đảo</span>
                                     </h1>
                                     <p className="text-lg text-blue-200 mb-8 max-w-xl leading-relaxed">
-                                        Kênh kiến thức Crypto bằng tiếng Việt dành cho người mới bắt đầu. 
-                                        Chúng tôi giúp bạn tự tin bước vào thế giới tài sản số mà không sợ bị lừa đảo hay thiếu kiến thức.
+                                        Kiến thức Crypto bằng tiếng Việt dành cho người mới bắt đầu. 
+                                        Chúng tôi giúp bạn hiểu đúng, đầu tư thông minh và bảo vệ tài sản số 
+                                        — không FOMO, không thiên vị, có kiểm chứng.
                                     </p>
+                                    
+                                    {/* Dual CTAs */}
                                     <div className="flex flex-col sm:flex-row gap-4">
                                         <a href="/posts/" className="gradient-brand text-white px-8 py-3.5 rounded-full font-bold text-center hover:shadow-xl hover:scale-105 transition-all">
                                             Khám phá bài viết mới nhất
@@ -314,12 +400,12 @@
                                 </div>
                             </div>
 
-                            {/* Stats bar */}
+                            {/* Stats bar - like speedreading.vn's "850 từ/phút" stat */}
                             <div className="border-t border-white/10 bg-white/5 backdrop-blur-sm">
                                 <div className="max-w-7xl mx-auto px-4 py-5">
                                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
                                         <div>
-                                            <p className="text-2xl font-extrabold text-white">{{ len (where .Site.RegularPages "Section" "posts") }}+</p>
+                                            <p className="text-2xl font-extrabold text-white">{postCount}+</p>
                                             <p className="text-xs text-blue-300 font-medium uppercase tracking-wider">Bài viết</p>
                                         </div>
                                         <div>
@@ -339,7 +425,73 @@
                             </div>
                         </section>
 
-                        {/* Features Section */}
+                        {/* ===== TRUST BADGES - inspired by speedreading.vn's "Khách hàng tiêu biểu" ===== */}
+                        <section className="py-10 md:py-14 bg-white border-b border-gray-100">
+                            <div className="max-w-7xl mx-auto px-4">
+                                <p className="text-center text-xs font-bold uppercase tracking-widest text-gray-400 mb-8">
+                                    Nguồn thông tin tham khảo uy tín
+                                </p>
+                                <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-6">
+                                    {trustSources.map((source, i) => (
+                                        <a 
+                                            key={i}
+                                            href={source.url}
+                                            target="_blank"
+                                            rel="noopener"
+                                            className="trust-logo"
+                                        >
+                                            <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-lg border border-gray-100">
+                                                <Globe size={16} className="text-gray-400" />
+                                                <span className="text-sm font-bold text-gray-500">{source.name}</span>
+                                            </div>
+                                        </a>
+                                    ))}
+                                </div>
+                            </div>
+                        </section>
+
+                        {/* ===== LEARNING PATHS - inspired by speedreading.vn's "Lựa Chọn Lộ Trình Phù Hợp" ===== */}
+                        <section className="py-16 md:py-20 bg-gray-50 border-b border-gray-100">
+                            <div className="max-w-7xl mx-auto px-4">
+                                <div className="text-center mb-12">
+                                    <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4">
+                                        Lộ trình phù hợp cho bạn
+                                    </h2>
+                                    <p className="text-gray-500 max-w-2xl mx-auto">
+                                        Dù bạn là người mới hay đã có kinh nghiệm, chúng tôi có nội dung phù hợp với trình độ và mục tiêu của bạn.
+                                    </p>
+                                </div>
+                                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                                    {learningPaths.map((path, i) => (
+                                        <a 
+                                            key={i}
+                                            href={path.link}
+                                            className="path-card bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden group"
+                                        >
+                                            {/* Top color bar */}
+                                            <div className={"h-2 bg-gradient-to-r " + path.color}></div>
+                                            <div className="p-6">
+                                                {/* Label badge */}
+                                                <span className={"inline-block text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full mb-4 bg-gradient-to-r text-white " + path.color}>
+                                                    {path.label}
+                                                </span>
+                                                {/* Icon */}
+                                                <div className={"w-12 h-12 rounded-xl flex items-center justify-center mb-4 bg-gradient-to-r " + path.color}>
+                                                    <path.icon size={24} className="text-white" />
+                                                </div>
+                                                <h3 className="text-lg font-bold text-gray-900 mb-2">{path.title}</h3>
+                                                <p className="text-sm text-gray-500 leading-relaxed mb-5">{path.desc}</p>
+                                                <div className="flex items-center gap-1 text-brand font-bold text-sm group-hover:gap-2 transition-all">
+                                                    {path.cta} <ArrowRight size={14} />
+                                                </div>
+                                            </div>
+                                        </a>
+                                    ))}
+                                </div>
+                            </div>
+                        </section>
+
+                        {/* ===== FEATURES SECTION ===== */}
                         <section className="py-16 md:py-20 bg-white border-b border-gray-100">
                             <div className="max-w-7xl mx-auto px-4">
                                 <div className="text-center mb-12">
@@ -352,8 +504,52 @@
                             </div>
                         </section>
 
-                        {/* Latest Posts Section */}
+                        {/* ===== WHY CHOOSE US - inspired by speedreading.vn's "Tại sao nên chọn" ===== */}
                         <section className="py-16 md:py-20 bg-gray-50 border-b border-gray-100">
+                            <div className="max-w-7xl mx-auto px-4">
+                                <div className="grid md:grid-cols-2 gap-12 items-center">
+                                    <div>
+                                        <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4">
+                                            Tại sao nên chọn Hiểu Biết Crypto?
+                                        </h2>
+                                        <p className="text-gray-500 mb-8 leading-relaxed">
+                                            Khác với các trang tin crypto thiên vị hoặc thiếu kiểm chứng, 
+                                            chúng tôi xây dựng nội dung dựa trên <strong className="text-gray-900">5 nguyên tắc cốt lõi</strong> 
+                                            để đảm bảo bạn nhận được thông tin chất lượng nhất, an toàn nhất.
+                                        </p>
+                                        <div className="space-y-6">
+                                            {benefits.map((b, i) => (
+                                                <div key={i} className="flex gap-4 items-start">
+                                                    <div className="w-10 h-10 rounded-lg bg-brand-light flex items-center justify-center flex-shrink-0 mt-0.5">
+                                                        <b.icon size={20} className="text-brand" />
+                                                    </div>
+                                                    <div>
+                                                        <h4 className="font-bold text-gray-900">{b.title}</h4>
+                                                        <p className="text-sm text-gray-500">{b.desc}</p>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                        <a href="/about/" className="mt-8 inline-flex items-center gap-2 text-brand font-bold hover:underline">
+                                            Tìm hiểu thêm về chúng tôi <ArrowRight size={16} />
+                                        </a>
+                                    </div>
+                                    <div className="relative">
+                                        <div className="absolute -inset-4 bg-brand/5 rounded-[40px] transform rotate-3"></div>
+                                        <div className="relative bg-white p-4 rounded-[32px] shadow-2xl border border-gray-100">
+                                            <img 
+                                                src="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                                                alt="Crypto đầu tư thông minh" 
+                                                className="rounded-[24px] w-full h-[350px] object-cover"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        {/* ===== LATEST POSTS ===== */}
+                        <section className="py-16 md:py-20 bg-white border-b border-gray-100">
                             <div className="max-w-7xl mx-auto px-4">
                                 <div className="flex items-center justify-between mb-12">
                                     <div>
@@ -387,38 +583,7 @@
                             </div>
                         </section>
 
-                        {/* Principles Section */}
-                        <section className="py-16 md:py-20 bg-white">
-                            <div className="max-w-7xl mx-auto px-4">
-                                <div className="grid md:grid-cols-2 gap-16 items-center">
-                                    <div>
-                                        <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-6">5 Nguyên tắc cốt lõi</h2>
-                                        <p className="text-gray-500 mb-10 leading-relaxed">
-                                            Chúng tôi xây dựng Hiểu Biết Crypto dựa trên 5 nguyên tắc chặt chẽ để đảm bảo 
-                                            bạn nhận được thông tin chất lượng nhất, an toàn nhất.
-                                        </p>
-                                        <div className="space-y-8">
-                                            <PrincipleCard icon={Shield} title="Bảo vệ người dùng" desc="Không FOMO, cảnh báo scam kịp thời. Ưu tiên an toàn của bạn lên hàng đầu." />
-                                            <PrincipleCard icon={Search} title="Kiểm tra chéo nguồn" desc="Mọi thông tin đều được kiểm chứng từ ít nhất 2 nguồn uy tín trước khi đăng tải." />
-                                            <PrincipleCard icon={Target} title="Khách quan 2 chiều" desc="Trình bày cả mặt tích cực và rủi ro, không thiên vị bất kỳ dự án hay đồng coin nào." />
-                                            <PrincipleCard icon={Globe} title="Phù hợp người mới" desc="Ngôn ngữ dễ hiểu, không biệt ngữ phức tạp. Ai cũng có thể bắt đầu." />
-                                        </div>
-                                    </div>
-                                    <div className="relative">
-                                        <div className="absolute -inset-4 bg-brand/5 rounded-[40px] transform rotate-3"></div>
-                                        <div className="relative bg-white p-4 rounded-[32px] shadow-2xl border border-gray-100">
-                                            <img 
-                                                src="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
-                                                alt="Crypto đầu tư thông minh" 
-                                                className="rounded-[24px] w-full h-[350px] object-cover"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
-
-                        {/* Disclaimer */}
+                        {/* ===== DISCLAIMER ===== */}
                         <section className="py-8 bg-gray-50">
                             <div className="max-w-7xl mx-auto px-4">
                                 <DisclaimerBanner />
