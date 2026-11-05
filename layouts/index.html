@@ -126,7 +126,29 @@
 <body>
     <div id="root"></div>
 
-    {{ `<script type="text/babel" data-type="module">
+    <!-- Hugo data injected at build time -->
+    <script id="hugo-data" type="application/json">
+    {
+        "postCount": {{ len (where .Site.RegularPages "Section" "posts") }},
+        "categoryCount": {{ len .Site.Taxonomies.categories }},
+        "posts": [
+            {{ range first 6 .Site.RegularPages.ByDate.Reverse }}
+            {
+                "title": {{ .Title | jsonify }},
+                "url": {{ .Permalink | jsonify }},
+                "date": "{{ .Date.Format "02/01/2006" }}",
+                "category": {{ with .Params.categories }}{{ index . 0 | jsonify }}{{ else }}""{{ end }},
+                "description": {{ .Params.description | jsonify }},
+                "readingTime": "{{ .ReadingTime }} phút"
+            }{{ if not (eq . (index (first 6 $.Site.RegularPages.ByDate.Reverse) (sub (len (first 6 $.Site.RegularPages.ByDate.Reverse)) 1))) }},{{ end }}
+            {{ end }}
+        ]
+    }
+    </script>
+
+    {{ `
+
+
         import React, { useState, useEffect } from "react";
         import { createRoot } from "react-dom/client";
         import { 
@@ -138,21 +160,11 @@
             CheckCircle, Quote, Zap, Clock
         } from "lucide-react";
 
-        // --- Data ---
-        const posts = [
-            {{ range first 6 .Site.RegularPages.ByDate.Reverse }}
-            {
-                title: {{ .Title | jsonify }},
-                url: {{ .Permalink | jsonify }},
-                date: "{{ .Date.Format "02/01/2006" }}",
-                category: {{ with .Params.categories }}{{ index . 0 | jsonify }}{{ else }}""{{ end }},
-                description: {{ .Params.description | jsonify }},
-                readingTime: "{{ .ReadingTime }} phút",
-            },
-            {{ end }}
-        ];
-
-        const postCount = {{ len (where .Site.RegularPages "Section" "posts") }};
+        // --- Data loaded from #hugo-data ---
+        const hugoData = JSON.parse(document.getElementById("hugo-data").textContent);
+        const posts = hugoData.posts;
+        const postCount = hugoData.postCount;
+        const categoryCount = hugoData.categoryCount;
 
         const features = [
             { 
@@ -302,6 +314,8 @@
             </div>
         );
 
+        const animStyle = (delay) => ({ animationDelay: delay + "s" });
+
         const DisclaimerBanner = () => (
             <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-800">
                 <div className="flex items-start gap-3">
@@ -409,7 +423,7 @@
                                             <p className="text-xs text-blue-300 font-medium uppercase tracking-wider">Bài viết</p>
                                         </div>
                                         <div>
-                                            <p className="text-2xl font-extrabold text-white">{{ len .Site.Taxonomies.categories }}</p>
+                                            <p className="text-2xl font-extrabold text-white">{categoryCount}</p>
                                             <p className="text-xs text-blue-300 font-medium uppercase tracking-wider">Danh mục</p>
                                         </div>
                                         <div>
@@ -564,7 +578,7 @@
                                 {posts.length > 0 ? (
                                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                                         {posts.map((post, i) => (
-                                            <div key={i} className="animate-fade-in" style={{ animationDelay: (i * 0.1) + "s" }}>
+                                            <div key={i} className="animate-fade-in" style={animStyle(i * 0.1)}>
                                                 <PostCard post={post} index={i} />
                                             </div>
                                         ))}

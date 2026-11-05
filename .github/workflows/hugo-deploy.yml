@@ -41,7 +41,7 @@ jobs:
           HUGO_CACHEDIR: ${{ runner.temp }}/hugo_cache
           HUGO_ENVIRONMENT: production
         run: |
-          hugo --gc --minify --baseURL "https://vanthuonghi.github.io/hieubietcrypto/"
+          hugo --gc --baseURL "https://vanthuonghi.github.io/hieubietcrypto/"
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
