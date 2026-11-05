@@ -11,7 +11,7 @@ categories:
   - Phân tích thị trường
 description: "Bitcoin dao động từ 75.600 USD lên 80.100 USD trong 24 giờ. Phân tích ba yếu tố chính đang chi phối thị trường crypto."
 cover:
-  image: "/bitcoin-vuot-80-000-usd-20261105021509.png"
+  image: "bitcoin-vuot-80-000-usd-20261105021509.png"
   alt: "Bitcoin vượt 80.000 USD - Ảnh minh họa"
   caption: "Nguồn: Hiểu Biết Crypto"
 ---

@@ -11,7 +11,7 @@ categories:
   - Tin tức thị trường
 description: "Đảng Dân chủ giành cả Thượng viện và Hạ viện trong bầu cử giữa nhiệm kỳ Mỹ. CLARITY Act đứng trước nguy cơ sụp đổ, nhưng Grayscale và BlackRock vẫn lạc quan."
 cover:
-  image: "/dang-dan-chu-gianh-quoc-hoi-my-20261105021332.png"
+  image: "dang-dan-chu-gianh-quoc-hoi-my-20261105021332.png"
   alt: "Dân chủ giành Quốc hội Mỹ - Ảnh minh họa"
   caption: "Nguồn: Hiểu Biết Crypto"
 ---
