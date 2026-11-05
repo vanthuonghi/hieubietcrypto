@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ .Site.Title }} - Trang Chủ</title>
+    <meta name="description" content="Kênh kiến thức Crypto an toàn, khách quan cho người mới bắt đầu. Tin tức thị trường, cảnh báo scam, kiến thức nền tảng.">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🪙</text></svg>">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Import Map -->
+    <script type="importmap">
+    {
+        "imports": {
+            "react": "https://esm.sh/react@18.2.0",
+            "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+            "react/jsx-runtime": "https://esm.sh/react@18.2.0/jsx-runtime",
+            "lucide-react": "https://esm.sh/lucide-react@0.263.1?deps=react@18.2.0"
+        }
+    }
+    </script>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            DEFAULT: '#f7931a',
+                            hover: '#e07e10',
+                            light: '#fff4e5',
+                        },
+                        crypto: {
+                            dark: '#0a1628',
+                            card: '#0f1d35',
+                            border: '#1a2d4a',
+                            text: '#8899b4',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        body { background-color: #f8fafc; }
+        
+        .hover-lift { 
+            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1); 
+        }
+        .hover-lift:hover { 
+            transform: translateY(-4px); 
+            box-shadow: 0 12px 30px -5px rgba(247, 147, 26, 0.10); 
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in { 
+            animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; 
+        }
+
+        .gradient-brand {
+            background: linear-gradient(135deg, #f7931a 0%, #ffb347 100%);
+        }
+        
+        .gradient-hero {
+            background: linear-gradient(135deg, #0a1628 0%, #1a2d4a 50%, #0f1d35 100%);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        .animate-float {
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .post-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .post-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.08);
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    {{ `<script type="text/babel" data-type="module">
+        import React, { useState, useEffect } from "react";
+        import { createRoot } from "react-dom/client";
+        import { 
+            Newspaper, BookOpen, Shield, TrendingUp, 
+            ChevronRight, Menu, X, ArrowRight, 
+            Target, Users, Search, Globe, 
+            AlertTriangle, BarChart3, ExternalLink
+        } from "lucide-react";
+
+        // --- Data ---
+        const posts = [
+            {{ range first 6 .Site.RegularPages.ByDate.Reverse }}
+            {
+                title: {{ .Title | jsonify }},
+                url: {{ .Permalink | jsonify }},
+                date: "{{ .Date.Format "02/01/2006" }}",
+                category: {{ with .Params.categories }}{{ index . 0 | jsonify }}{{ else }}""{{ end }},
+                description: {{ .Params.description | jsonify }},
+                readingTime: "{{ .ReadingTime }} phút",
+            },
+            {{ end }}
+        ];
+
+        const features = [
+            { 
+                icon: Newspaper, 
+                title: "Tin tức thị trường", 
+                desc: "Cập nhật giá Bitcoin, Ethereum và các sự kiện nóng ảnh hưởng đến thị trường crypto mỗi ngày.",
+                color: "bg-blue-500",
+                link: "/categories/tin-t%E1%BB%A9c-th%E1%BB%8B-tr%C6%B0%E1%BB%9Dng/"
+            },
+            { 
+                icon: BookOpen, 
+                title: "Kiến thức nền tảng", 
+                desc: "Giải thích dễ hiểu về blockchain, DeFi, NFT và các khái niệm crypto dành cho người mới bắt đầu.",
+                color: "bg-emerald-500",
+                link: "/categories/ki%E1%BA%BFn-th%E1%BB%A9c-c%C6%A1-b%E1%BA%A3n/"
+            },
+            { 
+                icon: Shield, 
+                title: "Cảnh báo & Bảo mật", 
+                desc: "Cảnh báo sớm các dự án scam, lừa đảo và hướng dẫn bảo vệ tài sản số an toàn.",
+                color: "bg-red-500",
+                link: "/categories/b%E1%BA%A3o-m%E1%BA%ADt/"
+            },
+            { 
+                icon: BarChart3, 
+                title: "Phân tích thị trường", 
+                desc: "Phân tích khách quan hai chiều, giúp bạn hiểu rõ động lực đằng sau mỗi biến động giá.",
+                color: "bg-purple-500",
+                link: "/categories/ph%C3%A2n-t%C3%ADch-th%E1%BB%8B-tr%C6%B0%E1%BB%9Dng/"
+            }
+        ];
+
+        const principles = [
+            { icon: Shield, title: "Bảo vệ người dùng", desc: "Không FOMO, cảnh báo scam kịp thời. Ưu tiên an toàn của bạn lên hàng đầu." },
+            { icon: Search, title: "Kiểm tra chéo nguồn", desc: "Mọi thông tin đều được kiểm chứng từ ít nhất 2 nguồn uy tín trước khi đăng tải." },
+            { icon: Target, title: "Khách quan 2 chiều", desc: "Trình bày cả mặt tích cực và rủi ro, không thiên vị bất kỳ dự án hay đồng coin nào." },
+            { icon: Globe, title: "Phù hợp người mới", desc: "Ngôn ngữ dễ hiểu, không biệt ngữ phức tạp. Ai cũng có thể bắt đầu." }
+        ];
+
+        // --- Sub Components ---
+        const NavItem = ({ label, href, mobile, onClick }) => {
+            const base = " font-semibold text-gray-600 hover:text-brand transition-colors";
+            const classes = mobile 
+                ? "block py-3 px-4 border-b border-gray-100 text-base" + base 
+                : "px-4 py-2 text-sm" + base;
+            return <a href={href} onClick={onClick} className={classes}>{label}</a>;
+        };
+
+        const FeatureCard = ({ icon: Icon, title, desc, color, link }) => (
+            <a href={link} className="block bg-white rounded-2xl p-8 border border-gray-100 shadow-sm hover-lift animate-fade-in h-full">
+                <div className={"w-14 h-14 rounded-xl flex items-center justify-center mb-6 " + color}>
+                    <Icon size={28} className="text-white" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-3">{title}</h3>
+                <p className="text-gray-500 text-sm leading-relaxed">{desc}</p>
+            </a>
+        );
+
+        const PostCard = ({ post, index }) => {
+            const categoryColors = {
+                "Tin tức thị trường": "bg-blue-100 text-blue-700",
+                "Kiến thức cơ bản": "bg-emerald-100 text-emerald-700",
+                "Bảo mật": "bg-red-100 text-red-700",
+                "Phân tích thị trường": "bg-purple-100 text-purple-700",
+            };
+            const catColor = categoryColors[post.category] || "bg-gray-100 text-gray-700";
+            
+            return (
+                <a href={post.url} className="block bg-white rounded-xl border border-gray-100 shadow-sm post-card overflow-hidden">
+                    <div className="p-6">
+                        <div className="flex items-center gap-3 mb-3">
+                            {post.category && (
+                                <span className={"text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded " + catColor}>
+                                    {post.category}
+                                </span>
+                            )}
+                            <span className="text-xs text-gray-400">{post.date}</span>
+                            <span className="text-xs text-gray-400">· {post.readingTime}</span>
+                        </div>
+                        <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2">{post.title}</h3>
+                        <p className="text-sm text-gray-500 line-clamp-2 leading-relaxed">{post.description}</p>
+                        <div className="mt-4 flex items-center gap-1 text-brand text-sm font-semibold">
+                            Đọc tiếp <ArrowRight size={14} />
+                        </div>
+                    </div>
+                </a>
+            );
+        };
+
+        const PrincipleCard = ({ icon: Icon, title, desc }) => (
+            <div className="flex gap-5 animate-fade-in">
+                <div className="w-12 h-12 rounded-xl bg-brand-light flex items-center justify-center flex-shrink-0">
+                    <Icon size={24} className="text-brand" />
+                </div>
+                <div>
+                    <h4 className="font-bold text-gray-900 mb-1">{title}</h4>
+                    <p className="text-sm text-gray-500 leading-relaxed">{desc}</p>
+                </div>
+            </div>
+        );
+
+        const DisclaimerBanner = () => (
+            <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-800">
+                <div className="flex items-start gap-3">
+                    <AlertTriangle size={20} className="flex-shrink-0 mt-0.5" />
+                    <div>
+                        <p className="font-bold mb-1">⚠️ Tuyên bố miễn trách</p>
+                        <p className="text-amber-700">Tất cả nội dung trên website chỉ mang tính tham khảo giáo dục, không phải lời khuyên tài chính. Đầu tư crypto có rủi ro mất vốn. Hãy tự nghiên cứu (DYOR) trước khi quyết định.</p>
+                    </div>
+                </div>
+            </div>
+        );
+
+        // --- Main App ---
+        function App() {
+            const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+            const menuLinks = [
+                { label: "Trang chủ", href: "/" },
+                { label: "Bài viết", href: "/posts/" },
+                { label: "Danh mục", href: "/categories/" },
+                { label: "Giới thiệu", href: "/about/" },
+            ];
+
+            return (
+                <div className="min-h-screen flex flex-col overflow-x-hidden">
+                    {/* Header */}
+                    <header className="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-md z-[100] border-b border-gray-100 shadow-sm">
+                        <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+                            <a href="/" className="flex items-center gap-2.5">
+                                <span className="text-2xl">🪙</span>
+                                <span className="text-lg font-extrabold text-gray-900 tracking-tight">Hiểu Biết <span className="text-brand">Crypto</span></span>
+                            </a>
+
+                            <nav className="hidden md:flex items-center gap-1">
+                                {menuLinks.map((link, i) => <NavItem key={i} {...link} />)}
+                                <a href="/posts/" className="ml-4 gradient-brand text-white px-5 py-2 rounded-full font-bold text-sm hover:shadow-lg transition-all active:scale-95">
+                                    Bắt đầu học
+                                </a>
+                            </nav>
+
+                            <button className="md:hidden text-gray-600" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                                {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
+                            </button>
+                        </div>
+
+                        {isMenuOpen && (
+                            <div className="md:hidden bg-white animate-fade-in border-b border-gray-100 shadow-xl">
+                                {menuLinks.map((link, i) => <NavItem key={i} {...link} mobile onClick={() => setIsMenuOpen(false)} />)}
+                                <div className="p-4">
+                                    <a href="/posts/" className="block w-full text-center gradient-brand text-white py-3.5 rounded-xl font-bold" onClick={() => setIsMenuOpen(false)}>
+                                        Bắt đầu học
+                                    </a>
+                                </div>
+                            </div>
+                        )}
+                    </header>
+
+                    {/* Main */}
+                    <main className="flex-grow pt-16">
+                        {/* Hero Section */}
+                        <section className="gradient-hero text-white relative overflow-hidden">
+                            <div className="absolute top-0 right-0 w-1/2 h-full opacity-5">
+                                <div className="absolute top-20 right-20 w-72 h-72 border border-white/20 rounded-full"></div>
+                                <div className="absolute top-40 right-40 w-96 h-96 border border-white/10 rounded-full"></div>
+                                <div className="absolute -bottom-20 right-10 w-64 h-64 border border-white/5 rounded-full"></div>
+                            </div>
+
+                            <div className="max-w-7xl mx-auto px-4 py-16 md:py-24 relative z-10">
+                                <div className="max-w-3xl">
+                                    <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-6 border border-white/20">
+                                        <Users size={14} /> Kiến thức Crypto dành cho người mới
+                                    </div>
+                                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-[1.1] mb-6">
+                                        Hiểu Biết <span className="text-brand">Crypto</span> <br/>
+                                        <span className="text-white/80 text-3xl md:text-4xl lg:text-5xl">An toàn, Khách quan, Có nguồn gốc</span>
+                                    </h1>
+                                    <p className="text-lg text-blue-200 mb-8 max-w-xl leading-relaxed">
+                                        Kênh kiến thức Crypto bằng tiếng Việt dành cho người mới bắt đầu. 
+                                        Chúng tôi giúp bạn tự tin bước vào thế giới tài sản số mà không sợ bị lừa đảo hay thiếu kiến thức.
+                                    </p>
+                                    <div className="flex flex-col sm:flex-row gap-4">
+                                        <a href="/posts/" className="gradient-brand text-white px-8 py-3.5 rounded-full font-bold text-center hover:shadow-xl hover:scale-105 transition-all">
+                                            Khám phá bài viết mới nhất
+                                        </a>
+                                        <a href="/about/" className="flex items-center justify-center gap-2 text-white/90 font-semibold px-8 py-3.5 border-2 border-white/20 rounded-full hover:bg-white/10 transition-all">
+                                            Về chúng tôi <ChevronRight size={18} />
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Stats bar */}
+                            <div className="border-t border-white/10 bg-white/5 backdrop-blur-sm">
+                                <div className="max-w-7xl mx-auto px-4 py-5">
+                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                                        <div>
+                                            <p className="text-2xl font-extrabold text-white">{{ len (where .Site.RegularPages "Section" "posts") }}+</p>
+                                            <p className="text-xs text-blue-300 font-medium uppercase tracking-wider">Bài viết</p>
+                                        </div>
+                                        <div>
+                                            <p className="text-2xl font-extrabold text-white">{{ len .Site.Taxonomies.categories }}</p>
+                                            <p className="text-xs text-blue-300 font-medium uppercase tracking-wider">Danh mục</p>
+                                        </div>
+                                        <div>
+                                            <p className="text-2xl font-extrabold text-white">100%</p>
+                                            <p className="text-xs text-blue-300 font-medium uppercase tracking-wider">Kiểm tra nguồn</p>
+                                        </div>
+                                        <div>
+                                            <p className="text-2xl font-extrabold text-white">F0</p>
+                                            <p className="text-xs text-blue-300 font-medium uppercase tracking-wider">Đối tượng phục vụ</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        {/* Features Section */}
+                        <section className="py-16 md:py-20 bg-white border-b border-gray-100">
+                            <div className="max-w-7xl mx-auto px-4">
+                                <div className="text-center mb-12">
+                                    <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4">Nội dung chính</h2>
+                                    <p className="text-gray-500 max-w-2xl mx-auto">Bốn mảng nội dung cốt lõi, được biên soạn bài bản và kiểm tra chéo nguồn thông tin.</p>
+                                </div>
+                                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                                    {features.map((f, i) => <FeatureCard key={i} {...f} />)}
+                                </div>
+                            </div>
+                        </section>
+
+                        {/* Latest Posts Section */}
+                        <section className="py-16 md:py-20 bg-gray-50 border-b border-gray-100">
+                            <div className="max-w-7xl mx-auto px-4">
+                                <div className="flex items-center justify-between mb-12">
+                                    <div>
+                                        <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-2">Bài viết mới nhất</h2>
+                                        <p className="text-gray-500">Cập nhật những phân tích và tin tức mới nhất về thị trường crypto.</p>
+                                    </div>
+                                    <a href="/posts/" className="hidden md:flex items-center gap-2 text-brand font-bold hover:underline">
+                                        Xem tất cả <ArrowRight size={18} />
+                                    </a>
+                                </div>
+
+                                {posts.length > 0 ? (
+                                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                        {posts.map((post, i) => (
+                                            <div key={i} className="animate-fade-in" style={{ animationDelay: (i * 0.1) + "s" }}>
+                                                <PostCard post={post} index={i} />
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="text-center py-12 text-gray-400">
+                                        <p>Chưa có bài viết nào. Quay lại sau nhé!</p>
+                                    </div>
+                                )}
+
+                                <div className="mt-10 text-center md:hidden">
+                                    <a href="/posts/" className="inline-flex items-center gap-2 text-brand font-bold">
+                                        Xem tất cả bài viết <ArrowRight size={18} />
+                                    </a>
+                                </div>
+                            </div>
+                        </section>
+
+                        {/* Principles Section */}
+                        <section className="py-16 md:py-20 bg-white">
+                            <div className="max-w-7xl mx-auto px-4">
+                                <div className="grid md:grid-cols-2 gap-16 items-center">
+                                    <div>
+                                        <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-6">5 Nguyên tắc cốt lõi</h2>
+                                        <p className="text-gray-500 mb-10 leading-relaxed">
+                                            Chúng tôi xây dựng Hiểu Biết Crypto dựa trên 5 nguyên tắc chặt chẽ để đảm bảo 
+                                            bạn nhận được thông tin chất lượng nhất, an toàn nhất.
+                                        </p>
+                                        <div className="space-y-8">
+                                            <PrincipleCard icon={Shield} title="Bảo vệ người dùng" desc="Không FOMO, cảnh báo scam kịp thời. Ưu tiên an toàn của bạn lên hàng đầu." />
+                                            <PrincipleCard icon={Search} title="Kiểm tra chéo nguồn" desc="Mọi thông tin đều được kiểm chứng từ ít nhất 2 nguồn uy tín trước khi đăng tải." />
+                                            <PrincipleCard icon={Target} title="Khách quan 2 chiều" desc="Trình bày cả mặt tích cực và rủi ro, không thiên vị bất kỳ dự án hay đồng coin nào." />
+                                            <PrincipleCard icon={Globe} title="Phù hợp người mới" desc="Ngôn ngữ dễ hiểu, không biệt ngữ phức tạp. Ai cũng có thể bắt đầu." />
+                                        </div>
+                                    </div>
+                                    <div className="relative">
+                                        <div className="absolute -inset-4 bg-brand/5 rounded-[40px] transform rotate-3"></div>
+                                        <div className="relative bg-white p-4 rounded-[32px] shadow-2xl border border-gray-100">
+                                            <img 
+                                                src="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                                                alt="Crypto đầu tư thông minh" 
+                                                className="rounded-[24px] w-full h-[350px] object-cover"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        {/* Disclaimer */}
+                        <section className="py-8 bg-gray-50">
+                            <div className="max-w-7xl mx-auto px-4">
+                                <DisclaimerBanner />
+                            </div>
+                        </section>
+                    </main>
+
+                    {/* Footer */}
+                    <footer className="gradient-hero text-white">
+                        <div className="max-w-7xl mx-auto px-4 py-16">
+                            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+                                <div className="lg:col-span-1">
+                                    <div className="flex items-center gap-2.5 mb-6">
+                                        <span className="text-2xl">🪙</span>
+                                        <span className="text-lg font-extrabold text-white tracking-tight">Hiểu Biết <span className="text-brand">Crypto</span></span>
+                                    </div>
+                                    <p className="text-blue-300 text-sm leading-relaxed mb-6">
+                                        Kênh kiến thức Crypto an toàn, khách quan cho người mới bắt đầu. 
+                                        Kiến thức là vũ khí mạnh nhất chống lại rủi ro.
+                                    </p>
+                                    <div className="flex gap-3">
+                                        <a href="https://facebook.com/hieubietcrypto" target="_blank" rel="noopener" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-brand transition-colors">
+                                            <Users size={20} />
+                                        </a>
+                                        <a href="https://github.com/vanthuonghi/hieubietcrypto" target="_blank" rel="noopener" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-brand transition-colors">
+                                            <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h4 className="text-base font-bold mb-6 border-l-4 border-brand pl-4">Danh mục</h4>
+                                    <ul className="space-y-3 text-sm text-blue-300 font-medium">
+                                        <li><a href="/categories/tin-t%E1%BB%A9c-th%E1%BB%8B-tr%C6%B0%E1%BB%9Dng/" className="hover:text-white transition-colors">Tin tức thị trường</a></li>
+                                        <li><a href="/categories/ki%E1%BA%BFn-th%E1%BB%A9c-c%C6%A1-b%E1%BA%A3n/" className="hover:text-white transition-colors">Kiến thức cơ bản</a></li>
+                                        <li><a href="/categories/b%E1%BA%A3o-m%E1%BA%ADt/" className="hover:text-white transition-colors">Cảnh báo & Bảo mật</a></li>
+                                        <li><a href="/categories/ph%C3%A2n-t%C3%ADch-th%E1%BB%8B-tr%C6%B0%E1%BB%9Dng/" className="hover:text-white transition-colors">Phân tích thị trường</a></li>
+                                    </ul>
+                                </div>
+
+                                <div>
+                                    <h4 className="text-base font-bold mb-6 border-l-4 border-brand pl-4">Liên kết</h4>
+                                    <ul className="space-y-3 text-sm text-blue-300 font-medium">
+                                        <li><a href="/about/" className="hover:text-white transition-colors">Giới thiệu</a></li>
+                                        <li><a href="/posts/" className="hover:text-white transition-colors">Tất cả bài viết</a></li>
+                                        <li><a href="https://github.com/vanthuonghi/hieubietcrypto" target="_blank" rel="noopener" className="hover:text-white transition-colors">GitHub</a></li>
+                                    </ul>
+                                </div>
+
+                                <div>
+                                    <h4 className="text-base font-bold mb-6 border-l-4 border-brand pl-4">Tuyên bố</h4>
+                                    <p className="text-sm text-blue-300 leading-relaxed">
+                                        Nội dung trên website này chỉ mang tính tham khảo giáo dục. 
+                                        Đầu tư crypto có rủi ro mất vốn. Hãy tự nghiên cứu (DYOR).
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="border-t border-white/10 pt-8 text-center text-xs text-blue-400 font-medium">
+                                <p>© 2026 Hiểu Biết Crypto. Nội dung mang tính tham khảo, không phải lời khuyên tài chính.</p>
+                            </div>
+                        </div>
+                    </footer>
+                </div>
+            );
+        }
+
+        const root = createRoot(document.getElementById("root"));
+        root.render(<App />);
+    </script>` | safeHTML }}
+</body>
+</html>
